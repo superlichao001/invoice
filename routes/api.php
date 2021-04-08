@@ -13,6 +13,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+$router = app('Dingo\Api\Routing\Router');
+$router->group(['version' => config('api.version'), 'prefix' => 'api', 'namespace' => 'App\Http\Controllers\Api'],
+    function ($router) {
+        $router->group(['prefix' => 'user'], function ($router) {
+            $router->post('login', 'UserController@login');//用户登录 - 不需要登录鉴权
+        });
+
+        $router->group(['prefix' => 'invoice'], function ($router) {
+            $router->post('check', 'InvoiceController@invoiceCheck');//校验发票
+        });
+
+    });
